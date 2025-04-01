@@ -3,6 +3,7 @@ import sqlite3
 
 app = Flask(__name__)
 
+server = app.server
 
 # Initialize SQLite Database
 def init_db():
