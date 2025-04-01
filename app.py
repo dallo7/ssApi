@@ -4,7 +4,6 @@ import sqlite3
 app = Flask(__name__)
 
 
-
 # Initialize SQLite Database
 def init_db():
     conn = sqlite3.connect('airspace.db')
@@ -111,6 +110,36 @@ def get_latest_flight():
         return jsonify({'error': str(e)}), 500
     finally:
         conn.close()
+
+
+# GET endpoint (ALL entries)
+@app.route('/api/flights/all', methods=['GET'])
+def get_all_flights():
+    conn = None
+    try:
+        conn = sqlite3.connect('airspace.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+
+        c.execute('''SELECT * FROM flights''')
+        result_rows = c.fetchall()
+        flights_list = [dict(row) for row in result_rows]
+
+        return jsonify(flights_list), 200
+
+    except sqlite3.Error as db_err:
+
+        print(f"Database Error: {db_err}")
+        return jsonify({'error': 'A database error occurred'}), 500
+    except Exception as e:
+
+        print(f"Unexpected Error: {e}")
+
+        return jsonify({'error': 'An internal server error occurred'}), 500
+    finally:
+
+        if conn:
+            conn.close()
 
 
 if __name__ == '__main__':
