@@ -100,7 +100,7 @@ def get_latest_flight():
         c = conn.cursor()
 
         c.execute('''SELECT * FROM flights ORDER BY TIMESTAMP DESC LIMIT 1''')
-        result = c.fetchone()
+        result = c.fetchall()
 
         if result:
             return jsonify(dict(result)), 200
